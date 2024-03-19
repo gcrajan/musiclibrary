@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Library</title>
+    <meta name="description" content="Browse and discover a vast collection of music from various genres. Add your favorite songs and create your personalized playlist.">
+    <meta name="keywords" content="music collection, songs, genres, playlist, YouTube music, music discovery">
+    <meta name="author" content="Rajan GC">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="Music Collection">
+    <meta property="og:description" content="Browse and discover a vast collection of music from various genres. Add your favorite songs and create your personalized playlist.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.gcrajan.com.np/">
+    <meta property="og:image" content="https://www.gcrajan.com.np/static/media/logo.19e743cce9fb84ebc5b8ccc35c77c6f9.svg">
+    <meta property="twitter:url" content="https://twitter.com/iamgcrajan">
+    <meta property="twitter:title" content="Music Collection">
+    <meta property="twitter:description" content="Browse and discover a vast collection of music from various genres. Add your favorite songs and create your personalized playlist.">
+    <meta property="twitter:image" content="https://twitter.com/iamgcrajan/photo">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f4ff;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            position: relative;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        input[type="text"],input[type="password"], input[type="url"], select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            background-color: #56c95a;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .music-list {
+            margin: 2rem 7rem;
+            display: flex;
+            flex-direction: column;
+        }
+        #music{
+            position: sticky;
+            top: 0px;
+            z-index: 1;
+        }
+        .music-list-btn {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            background-color: #b1c5fa;
+            margin-bottom: 1.5rem;
+        }
+        .music-list-btn button{
+            width: 15% !important;
+            background-color: #b1c5fa !important;
+        }
+        .music-list-btn button:hover{
+            color: #507efc !important;
+        }
+        .music-list-div {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .music-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .music-item:hover {
+            background-color: #f5faff;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        #cardTitle{
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding-bottom: 4px;
+        }
+        .music-item p {
+            margin: 0;
+            font-variant-caps: all-small-caps;
+            font-weight: 700;
+        }
+        #Logout{
+            position: absolute;
+            top: 1.5rem;
+            right: 1rem;
+            width: 20%;
+        }
+        #user{
+            position: absolute;
+            top: 1.7rem;
+            left: 1rem;
+            color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="container">
+            <div id="loginForm">
+                <h1>LogIn</h1>
+                <div>
+                    <input type="text" id="username" placeholder="Username">
+                    <input type="password" id="password" placeholder="Password">
+                    <button onclick="login()">Login</button>
+                </div>
+            </div>
+            <div id="musicForm" style="display:none;">
+                <h1>Music Collection</h1>
+                <div>
+                    <input type="text" id="name" placeholder="Music Name" required>
+                    <input type="url" id="url" placeholder="YouTube URL" required>
+                    <select id="category" required>
+                        <option value="">Select Language</option>
+                        <option value="indian">Indian</option>
+                        <option value="nepali">Nepali</option>
+                        <option value="english">English</option>
+                        <option value="others">Others</option>
+                    </select>
+                    <button onclick="addMusic()">Add Music</button>
+                    <button onclick="logout()" id="Logout">Logout</button>
+                    <h3 id="user">Welcome, <span id="userName"></span></h3>
+                </div>
+            </div>
+        </div>
+        <div class="music-list">
+            <div  id="music" style="display:none;">
+                <div class="music-list-btn">
+                    <button onclick="filterMusic('All')">All</button>
+                    <button onclick="filterMusic('nepali')">Nepali</button>
+                    <button onclick="filterMusic('indian')">Indian</button>
+                    <button onclick="filterMusic('english')">English</button>
+                    <button onclick="filterMusic('others')">Others</button>
+                </div>
+            </div>
+            <div class="music-list-div" id="musicList">
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Function to check if user is logged in
+        function checkLogin() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                document.getElementById('userName').innerText = user; 
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('musicForm').style.display = 'block';
+                document.getElementById('music').style.display = 'block';
+                loadMusicCollection(user);
+            }
+        }
+
+        // Function to login
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            if (username && password) {
+                localStorage.setItem('user', username);
+                document.getElementById('userName').innerText = username;
+                loadMusicCollection(username);
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('musicForm').style.display = 'block';
+                document.getElementById('music').style.display = 'block';
+            } else {
+                alert('Please enter both username and password.');
+            }
+        }
+        
+
+        // Function to logout
+        function logout() {
+            localStorage.removeItem('user');
+            location.reload();
+        }
+
+
+        // Function to load user's music collection
+        function loadMusicCollection(user) {
+            const collection = JSON.parse(localStorage.getItem(user)) || [];
+            const musicList = document.getElementById('musicList');
+            musicList.innerHTML = '';
+            collection.forEach(music => {
+                const musicItem = createMusicItem(music.name, music.url, music.category);
+                musicList.appendChild(musicItem);
+            });
+        }
+        
+
+        // Function to filter music based on category
+        function filterMusic(category) {
+            const musicItems = document.querySelectorAll('.music-item');
+            musicItems.forEach(item => {
+                const itemCategory = item.getAttribute('data-category');
+                if (category === 'All' || itemCategory === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+
+        // Function to add music to the list
+        function addMusic() {
+            const name = document.getElementById('name').value;
+            const url = document.getElementById('url').value;
+            const category = document.getElementById('category').value;
+
+            const user = localStorage.getItem('user');
+            if (!user) {
+                alert('Please login to add music.');
+                return;
+            }
+
+            // Validate YouTube URL
+            const youtubeRegex = /^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.?be)\/.+$/
+            if (!youtubeRegex.test(url)) {
+                alert('Please enter a valid YouTube URL.');
+                return;
+            }
+
+            const music = { name, url, category };
+            const collection = JSON.parse(localStorage.getItem(user)) || [];
+            collection.push(music);
+            localStorage.setItem(user, JSON.stringify(collection));
+
+            const musicItem = createMusicItem(name, url, category);
+            musicItem.setAttribute('data-category', category); // Set data-category attribute
+            document.getElementById('musicList').appendChild(musicItem);
+
+            // Clear form fields
+            document.getElementById('name').value = '';
+            document.getElementById('url').value = '';
+            document.getElementById('category').selectedIndex = 0;
+
+            // Apply filter if a category is selected
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            if (selectedCategory !== 'All') {
+                filterMusic(selectedCategory);
+            }
+        }
+
+
+        // Function to load user's music collection
+        function loadMusicCollection(user) {
+            const collection = JSON.parse(localStorage.getItem(user)) || [];
+            const musicList = document.getElementById('musicList');
+            musicList.innerHTML = '';
+            collection.forEach(music => {
+                const musicItem = createMusicItem(music.name, music.url, music.category);
+                musicItem.setAttribute('data-category', music.category); // Set data-category attribute
+                musicList.appendChild(musicItem);
+            });
+        }
+
+
+
+
+        // Function to create a music item element
+        function createMusicItem(name, url, category) {
+            const musicItem = document.createElement('div');
+            musicItem.classList.add('music-item');
+            musicItem.innerHTML = `
+                <div id="cardTitle">
+                    <p>${name}</p>
+                    <p>Category: ${category}</p>
+                </div>
+                <iframe width="300" height="200" src="https://www.youtube.com/embed/${extractVideoID(url)}" frameborder="0" allowfullscreen></iframe>
+            `;
+            return musicItem;
+        }
+
+        // Function to extract video ID from YouTube URL
+        function extractVideoID(url) {
+            const videoIDRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(videoIDRegex);
+            return match ? match[1] : null;
+        }
+
+        // Check login status on page load
+        checkLogin();
+    </script>
+</body>
+</html>
