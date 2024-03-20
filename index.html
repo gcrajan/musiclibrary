@@ -294,15 +294,21 @@
         function createMusicItem(name, url, category) {
             const musicItem = document.createElement('div');
             musicItem.classList.add('music-item');
+            musicItem.setAttribute('data-category', category); // Set data-category attribute
             musicItem.innerHTML = `
-                <div id="cardTitle">
-                    <p>${name}</p>
-                    <p>Category: ${category}</p>
-                </div>
-                <iframe width="300" height="200" src="https://www.youtube.com/embed/${extractVideoID(url)}" frameborder="0" allowfullscreen></iframe>
+                <img src="https://img.youtube.com/vi/${extractVideoID(url)}/default.jpg" alt="${name}">
+                <p>Name: ${name}</p>
+                <p>Category: ${category}</p>
+                <button onclick="openVideo('${url}')">Open Video</button>
             `;
             return musicItem;
         }
+        
+        // Function to open video in YouTube
+        function openVideo(url) {
+            window.open(url, '_blank');
+        }
+
 
         // Function to extract video ID from YouTube URL
         function extractVideoID(url) {
