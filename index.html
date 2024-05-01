@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Library</title>
     <meta name="description" content="Browse and discover a vast collection of music from various genres. Add your favorite songs and create your personalized playlist.">
-    <meta name="keywords" content="music collection, songs, genres, playlist, YouTube music, music discovery">
+    <meta name="keywords" content="musiccollection, music collection, musiclibray, music libray, librarymusic, musicrajan, rajanmusic, rajan music list, music list, musiclist, listmusic, songs, genres, playlist, YouTube music, music discovery">
     <meta name="author" content="Rajan GC">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Music Collection">
@@ -299,7 +299,7 @@
                     <p>${name}</p>
                     <p>Category: ${category}</p>
                 </div>
-                <iframe width="300" height="200" src="https://www.youtube.com/embed/${extractVideoID(url)}" frameborder="0" allowfullscreen></iframe>
+                <iframe width="300" height="200" src="https://www.youtube.com/embed/${extractVideoID(url)}?loop=1&playlist=${extractVideoID(url)}" frameborder="0" allowfullscreen></iframe>
             `;
             return musicItem;
         }
